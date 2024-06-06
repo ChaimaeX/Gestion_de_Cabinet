@@ -1,0 +1,172 @@
+{% extends "index.html"%}
+{% load static %}
+{% block content %}
+<style>
+    *{
+   margin:0;
+   padding:0;
+   }
+   body{
+   background-color: rgb(7, 54, 74);
+   color:#fff;
+   font-size: system-ui;
+   }
+   .stock{
+   width: 100%;
+   margin: auto;
+   }
+   .head{
+   text-align: center;
+   text-transform: uppercase;
+   margin: 40px , 0;
+   padding: 30px;
+   }
+   input{
+   width: 100%;
+   height: 30px;
+   outline: none;
+   border: none;
+   background-color: #b4b0b0;
+   margin: 4px 0;
+   border-radius: 4px;
+   padding: 20px 4px;
+   margin: 10px auto;
+   color: #272323;
+   
+   }
+   /* had focus fach ktochi l input ktbdal lon dyalha*/
+   input:focus{
+   background: #b9b1b1;
+   transform: scale(1.1);
+   }
+   #prix.input{
+   
+   display: flex;
+   justify-content: space-between;
+   }
+   #total{
+   background-color: red;
+   padding: 4px 2px;
+   border-radius: 4px;
+   
+   }
+   #total::before{
+   content: 'Total: ';
+   }
+   .submit{
+   width: 100%;
+   height: 30px;
+   border: none;
+   border-radius: 10px;
+   cursor: pointer;
+   background: #551055;
+   transition: 0.5s;
+   color: #fff;
+   }
+   .submit:hover{
+   background: #c944ae;
+   letter-spacing: 2px;
+   }
+   .btnsearch{
+   display: flex;
+   justify-content: space-between;
+   
+   }
+   .btnsearch button{
+   width: 45%;
+   }
+   table{
+   width: 100%;
+   text-align: center;
+   margin: 10px 0;
+   }
+   table th{
+   text-transform: uppercase;
+   }
+   th,td{
+   padding: 5px;
+   }
+   #deleteAll{
+   margin: 20px 0;
+   }
+   #telecharger{
+   margin: 20px 4px;
+   width: auto;
+   height: 30px;
+   border-radius: 10px;
+   text-align: center;
+   padding-top: 5px;
+   cursor: pointer;
+   background-color: red;
+   display: none;
+   
+   }
+   a{
+   color: #fff;
+   text-decoration: none;
+   } 
+   a:hover{
+   color: var(#000);
+   }
+   #submit{
+       margin-top: 5px;
+   }
+   .box{
+    display: flex;
+    justify-content: space-between;
+    max-width: 20px;
+   }
+   .check{
+    padding-left: 15px;
+    padding-top: 5px;
+   }
+   </style>
+   <div class="stock">
+   
+    <div class="head"> <h3>Modifier le produit</h3>
+    </div>
+   
+    <form  method="post">
+     {% csrf_token %}
+    <div class="imputs">
+    
+      <input placeholder="title" value="{{product.name}}" required name="title" type="text" id="title">
+      <div id="prix">
+        <input onkeyup="getTotal()" type="text" pattern="\d+(\.\d{1,2})?" name="price" id="price" placeholder="Prix" value="{{product.price}}">
+        <input onkeyup="getTotal()"  type="number" name="qantite" id="qantite"  placeholder="Quantite" value="{{product.quantity}}">
+        <input onkeyup="getTotal()"  type="text" name="total" pattern="\d+(\.\d{1,2})?" id="total"  placeholder="total" value="{{product.total}}">
+      </div>
+       
+       <input type="text" value="{{product.category}}" placeholder="category" id="category" name="category">
+       <div class="form-check box">
+        <input class="form-check-input" name="important" type="checkbox" value="True" id="defaultCheck1">
+        <label class="form-check-label check" for="defaultCheck1">
+          Important
+        </label>
+        </div>
+        <br><br>
+       <button id="submit" class="submit">Met à jour</button>
+     <br><br><br>
+    </div>
+ </form>
+</div>
+   <script>
+       getTotal = function () {
+           
+           let price = '#price';
+           let qte ='#qantite';
+           let total ='#total';
+           if($(price).val() != 0 && $(qte).val() != 0 ){
+           console.log(price,qte);
+           let result = parseFloat($(price).val())*parseFloat($(qte).val())
+           $(total).val(result);
+          
+           }
+           else{
+               $(total).val(0); 
+           }
+       }
+   
+      
+   </script>
+{% endblock content %}

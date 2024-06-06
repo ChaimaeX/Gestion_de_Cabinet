@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/styleLogin.css'%}">
+    <title>Cabinet Hafsa</title>
+</head>
+<body>
+    
+    <div class="wrapper">
+        <form method="post">
+            {% csrf_token %}
+            <h1>Login</h1>
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
+                {% if messages %}
+                 {% for message in messages %}
+                   <span style="color: red;font-size: 0.9em; ">{{ message }}</span><br>
+               {% endfor %}
+               {% endif %}
+            </div>
+             
+            <div class="input-box">
+                <input type="password" name="password" placeholder="password" required>
+                <i class='bx bxs-lock-alt'></i>
+               
+            </div>
+            <div class="remember-forgot">
+                <label > <input type="checkbox">Remember me</label>
+                <!-- <a href="#">Forget password</a> -->
+            </div>
+            <button type="submit" class="btn">Login</button>
+
+        </form>
+    </div>
+</body>
+</html>

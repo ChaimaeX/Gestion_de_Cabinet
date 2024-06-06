@@ -1,0 +1,205 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+          *{
+    margin:0;
+    padding:0;
+    }
+    body{
+     background-color: #fff;
+     color:#1e2637;
+     font-size: system-ui;
+    }
+   .stock{
+    width: 100%;
+    margin: auto;
+    }
+   .head{
+     text-align: center;
+     text-transform: uppercase;
+     margin: 40px , 0;
+     padding: 30px;
+    }
+input{
+    width: 100%;
+    height: 30px;
+    outline: none;
+    border: none;
+    background-color: #111;
+    margin: 4px 0;
+    border-radius: 4px;
+    padding: 10px 4px;
+
+    color: #fff;
+}
+/* had focus fach ktochi l input ktbdal lon dyalha*/
+/* input:focus{
+    background: #000;
+    transform: scale(1.1);
+} */
+#prix.input{
+    
+ display: flex;
+ justify-content: space-between;
+}
+#total{
+    background-color: red;
+    padding: 4px 2px;
+    border-radius: 4px;
+  
+}
+#total::before{
+    content: 'Total: ';
+}
+.submit{
+    width: 100%;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #a529a5;
+    transition: 0.2s;
+    color: #fff;
+}
+.submit:hover{
+    background: #c944ae;
+    letter-spacing: 2px;
+}
+.btnsearch{
+    display: flex;
+    justify-content: space-between;
+
+}
+/* .search {
+  /* width: 45%; 
+  background-color: #262a32;
+}*/
+/* .search:hover{
+    background-color: #3c4353;
+    color:#fffcfc;
+} */
+table{
+     width: 100%;
+     text-align: center;
+     margin: 10px 0;
+}
+table th{
+    text-transform: uppercase;
+}
+th,td{
+    padding: 5px;
+}
+#deleteAll{
+    margin: 20px 0;
+    
+}
+.def th{
+    color: #dd31dd;
+}
+
+#telecharger{
+    margin: 20px 4px;
+    width: auto;
+    height: 30px;
+    border-radius: 10px;
+    text-align: center;
+    padding-top: 5px;
+    cursor: pointer;
+    background-color: red;
+     display: none;
+
+}
+ a{
+    color: #fff;
+    text-decoration: none;
+} 
+a:hover{
+   color: var(#000);
+}
+
+   </style>
+    
+</head>
+<body>
+    <br><br><br>
+      <h2 class="text-center m-10" style="color: #dd31dd;background-color: #600e60;"> Stock Management</h2>
+      <br><br>
+       <div class="outputs">
+        <div class="form-group ">
+            <input id="search" class="form-control search" type="text" placeholder="Search....">
+        </div>
+              <!-- <div class="btnsearch">
+                <button id="searchTitle" onclick="getSearch(this.id)">Search By Title</button>
+                <button id="searchCategory" onclick="getSearch(this.id)">Search By category</button>
+
+             </div> -->
+       
+        <div id="deleteAll"></div>
+        <table>
+            <thead class="def">
+                <tr>
+                    <th>Identifiant</th>
+                    <th>Titre</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th>Catégorie</th>
+                    <th>Mettre à jour</th>
+                    <th>Supprimer</th>
+                </tr>
+           </thead>
+          
+            <tbody id="myTab">
+                {% if product %}
+                {% for produit in product %}
+                <tr>
+                <td scope="row">{{produit.pk}}</td>
+                <td>{{produit.name}}</td>
+                <td>{{produit.price}}</td>
+                <td>{{produit.quantity}}</td>
+                <td>{{produit.total}}</td>
+                <td>{{produit.category}}</td>
+                <form method="post" action="{% url 'upProduct'%}">
+                {% csrf_token %}
+                <input type="hidden"name="update" id="update" value="{{produit.pk}}">
+                <td><button type="submit" class="submit" data-toggle="modal" >Modifier</button></td>
+                </form> 
+                
+                <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="id_sup" id="id_sup" value="{{produit.pk}}">
+                <td><button type="submit" class="submit" data-toggle="modal" > Supprimer</button></td>
+                
+                </form> 
+               </tr>
+            {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+       </div>
+    </div>
+   
+    <script>
+    $(document).ready(function(){
+    $("#search").on("keyup", function(){
+        let value = $(this).val().toLowerCase();
+        console.log(value);
+        $("#myTab tr").filter(function(){
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+     });
+    });
+
+    </script>
+   
+</body>
+</html>
+{% endblock content%}
+

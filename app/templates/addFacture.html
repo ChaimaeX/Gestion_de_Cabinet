@@ -1,0 +1,257 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<!-- Inclure jQuery -->
+
+<!-- Inclure le script JavaScript de Bootstrap Select -->
+
+   
+<br><br><br>
+<!-- il ya un problem quand je remove total il va reste vide -->
+<h1 class="text-capitalize text-center mx-10 bg-dark text-white" > Enregistrer une nouvelle facture </h1>
+<br>
+<form method="post">
+
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="client"> Client </label>
+            <input required name="client" type="text" class="form-control" id="client-1">
+    
+        </div>
+    </div>
+
+    <!-- <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="invoice"> Invoice Type </label>
+            <select name="invoice_type" class="form-control" id="invoice">
+                <option> Choose the invoice type ... </option>
+                <option value="R">RECEIPT</option>
+                <option value="P">PROFORMA INVOICE</option>
+                <option value="I">INVOICE</option>
+            </select>
+        </div>
+    </div> -->
+
+    <div id="wrapper">
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="produit-1">#1 Item name </label>
+                <div class="selectpicker">
+                 <select name="produit" class="form-control"  id="produit" data-live-search="true">
+                <option> Choose a product ... </option>
+                {% for produit in produits %}
+                <option value="{{produit.id}}"  onkeyup="getTotal(this.id)">{{forloop.counter}}-{{produit.name}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="qty-1"> Quantite </label>
+                <input required name="qty" type="number" min="1" step="0.1"  onkeyup="getTotal(this.id)" class="form-control" id="qty-1">
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="unit-1"> Prix </label>
+                <input required name="unit"   type="text" pattern="\d+(\.\d{1,2})?"  onkeyup="getTotal(this.id)" class="form-control" id="unit-1">
+               
+            </div>
+            <!-- <div class="form-group col-md-2">
+                <label for="produit-1">Type </label>
+                 <input required name="article" type="text" class="form-control" id="article-1"> 
+                 <select name="type" class="form-control" id="type">
+                 <option> Choose a type ... </option>
+                  <option value="F">Facture</option>
+                 <option value="B">Bon de livraison</option> 
+              
+            </select>
+            </div> -->
+
+           
+            <div class="form-group col-md-3">
+                <label for="total-a-1"> Total </label>
+                <input required name="total-a" type="number"  pattern="\d+(\.\d{1,2})?" readonly class="form-control"
+                    id="total-a-1">
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="total"> Taux TVA </label>
+                <input  type="number" value="" step="0.1" name="TTVA" class="form-control" id="TTVA" placeholder="exemple 20%">
+            </div>
+
+    </div>
+   </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="total"> Total </label>
+            <input  type="number" value="0"  pattern="\d+(\.\d{1,2})?" name="total" readonly class="form-control" id="total">
+        </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+                <label for="produit-1">Mode de reglement </label>
+                 
+                 <select name="type" class="form-control" id="type">
+                 <option value="E">ESPACE</option>
+                 <option value="C"> CHEQUE</option> 
+                </select>
+    </div>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" name="paid" type="checkbox" value="True" id="defaultCheck1">
+        <label class="form-check-label" for="defaultCheck1">
+          Paid
+        </label>
+    </div>
+      
+     <br><br><br>
+    <button type="submit" class="btn btn-primary" > Save </button>
+
+</form>
+
+<br><br>
+
+<div class="row addRemove">
+
+    <button id="btn-add" onclick="Add()" class="btn btn-outline-danger w-30 col-md-4"> Add a new item line </button>
+    <button id="btn-add"  class="btn w-30 col-md-4"> </button>
+    <button id="btn-remove" onclick="remove()"  class="btn btn-outline-warning w-30 col-md-4"> Remove last item line </button>
+
+</div>
+
+
+<br><br><br><br>
+<!-- <script>
+
+    $(document).ready(function(){
+        $('.selection my-select').selectpicker();
+    })
+</script> -->
+
+
+<script>
+    $(document).ready(function(){
+        $('.selectpicker select').selectpicker();
+    })
+</script>
+<script type="text/javascript">
+
+    Add = function() {
+        console.log('chaimae')
+       
+         let number = $('#wrapper').children().length ;
+    
+         formAdd = `
+    
+         <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="produit-1">#${number} Item name </label>
+                <!-- <input required name="article" type="text" class="form-control" id="article-1"> -->
+                 <select name="produit" class="form-control" id="produit">
+                <option> Choose a product ... </option>
+                {% for produit in produits %}
+                 <option value="{{produit.id}}"  onkeyup="getTotal(this.id)"> {{forloop.counter}}-{{produit.name}}</option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <div class="form-group col-md-2">
+                <label for="qty-1"> Quantite </label>
+                <input required name="qty" type="number" min="1" step="0.1" onkeyup="getTotal(this.id)"  class="form-control" id="qty-${number}">
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="unit-1"> Prix </label>
+                <input required name="unit" type="text" pattern="\\d+(\\.\\d{1,2})?" onkeyup="getTotal(this.id)" class="form-control" id="unit-${number}">
+               
+            </div>
+
+           
+            <div class="form-group col-md-3">
+                <label for="total-a-1"> Total </label>
+                <input required name="total-a" type="number" pattern="\\d+(\\.\\d{1,2})?"  readonly class="form-control"
+                    id="total-a-${number}">
+            </div>
+            
+            <div class="form-group col-md-12">
+            <label for="total"> Taux TVA </label>
+            <input  type="number" value="" step="0.1" name="TTVA" class="form-control" id="TTVA" placeholder="exemple 20%">
+            </div>
+
+        </div>
+       
+       
+
+                    `;   
+                    // document.getElementById('more').innerHTML = formAdd;                
+        
+        $("#wrapper:last").append(formAdd);          
+    }
+    // remove last item line
+    remove = function(){
+        let num =  $('#wrapper').children().length -1  ;
+        console.log(num);
+        let idQty = `#qty-${num}`;
+        let unitId = `#unit-${num}`;
+         console.log($(idQty).val(),$(unitId).val());
+        // let total = document.getElementById('total');
+        let total = parseFloat($('#total').val()) - (parseFloat($(idQty).val()) * parseFloat($(unitId).val()));
+        console.log(total);
+        $("#wrapper").children().last().remove()
+        $(`#total`).val(total)
+       
+        // console.log(parseFloat($(total).val()));
+
+    }
+    // calculer le total
+   
+    // let price;
+    let tab = [];
+    function getTotal(id){
+              
+            if ( $('#total').val() == '')
+                     $('#total').val(0);
+               
+               console.log(id.toString().split('-'))
+               let articleId = id.split('-')[1];
+               
+               let idQty = `#qty-${articleId}`;
+
+               let unitId = `#unit-${articleId}`;
+
+               let totalIdLine = `#total-a-${articleId}`;
+
+               let totalLine = parseFloat($(idQty).val()) * parseFloat($(unitId).val());
+
+               $(totalIdLine).val(totalLine);
+               tab[articleId] = totalLine;
+            //    if (cpt == articleId){ 
+            //      result = totalLine;
+                    // cpt++;
+            //    }
+            //    else{ 
+                //   result = totalLine;
+                // $('#total').val(parseFloat($('#total').val()) + totalLine);
+            //    }
+            let sum =0 ;
+            for (i in tab){
+                 sum = sum + tab[i];
+                $('#total').val(sum);
+            }
+    
+}
+
+
+    
+    
+    </script>
+    
+   
+{% endblock content %}
+
